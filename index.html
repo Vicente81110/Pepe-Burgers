@@ -664,7 +664,7 @@
         <span class="cart-total-label">Total</span>
         <span class="cart-total-amount" id="cart-total">$0</span>
       </div>
-      <button class="order-btn" onclick="placeOrder()">CONFIRMAR PEDIDO</button>
+      <button class="order-btn" onclick="placeOrder()">PEDIR POR WHATSAPP</button>
       <button class="clear-btn" onclick="clearCart()">Vaciar carrito</button>
     </div>
   </aside>
@@ -902,11 +902,25 @@
         showToast('Agrega algo al carrito primero');
         return;
       }
-      toggleCart();
-      setTimeout(() => {
-        document.getElementById('modal-overlay').classList.add('open');
-        clearCart();
-      }, 400);
+
+      // ── NUMERO DE WHATSAPP DE PEPE ──────────────────────────
+      // Reemplazá este número con el de Pepe (código de país sin el +)
+      // Ejemplo Argentina: 5491112345678  (54 = ARG, 11 = área, el resto el número)
+      const NUMERO_PEPE = '5491127375703';
+      // ────────────────────────────────────────────────────────
+
+      const entries    = Object.values(cart);
+      const totalPrice = entries.reduce((s, e) => s + e.item.price * e.qty, 0);
+
+      let msg = '¡Hola Pepe! Quiero hacer el siguiente pedido:\n\n';
+      entries.forEach(({ item, qty }) => {
+        msg += `• ${qty}x ${item.name} — $${(item.price * qty).toLocaleString('es-AR')}\n`;
+      });
+      msg += `\n*Total: $${totalPrice.toLocaleString('es-AR')}*`;
+      msg += '\n\n¿Me confirmás el pedido? 🙌';
+
+      const url = `https://wa.me/${NUMERO_PEPE}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
     }
 
     function closeModal() {
